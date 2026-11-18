@@ -1,11 +1,6 @@
 package utils;
 
-public class SkipList <T> implements Comparable<T> {
+public class SkipList <T extends Comparable<? super T>> {
 
 
-
-    @Override
-    public int compareTo(T o) {
-        return 0;
-    }
 }
