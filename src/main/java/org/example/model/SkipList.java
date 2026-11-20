@@ -97,8 +97,13 @@ public class SkipList {
         return current;
     }
 
-    //TODO: reconcile with correct implementation
     private int getRandomLevel() {
-        return random.nextInt(maxLevel + 1);
+        int doesContinue = 1;
+        int counter = -1; //in order to start with 0
+        while(doesContinue > 0) {
+            counter++;
+            doesContinue = random.nextInt(2);
+        }
+        return counter;
     }
 }
