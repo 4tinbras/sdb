@@ -54,7 +54,6 @@ public class SkipList {
         }
     }
 
-    //fails when querying for head
     public boolean search(int value) {
         SkipListNode current = this.head;
 
