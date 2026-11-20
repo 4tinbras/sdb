@@ -54,8 +54,13 @@ public class SkipList {
         }
     }
 
+    //fails when querying for head
     public boolean search(int value) {
         SkipListNode current = this.head;
+
+        if (this.head.value == value) {
+            return true;
+        }
 
         //find and stop before desired value
         for (int i = maxLevel; i >= 0; i--) {

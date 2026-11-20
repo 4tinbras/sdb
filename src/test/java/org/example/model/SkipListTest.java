@@ -13,12 +13,12 @@ class SkipListTest {
         skipList.insert(11);
         skipList.insert(7);
         skipList.insert(2);
-//        skipList.insert(-1);
+        skipList.insert(-1);
 
         assertTrue(skipList.search(5));
         assertTrue(skipList.search(11));
         assertTrue(skipList.search(7));
         assertTrue(skipList.search(2));
-//        assertTrue(skipList.search(-1));
+        assertTrue(skipList.search(-1));
     }
 }
