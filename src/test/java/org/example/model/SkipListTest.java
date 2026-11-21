@@ -21,9 +21,11 @@ class SkipListTest {
         assertTrue(skipList.search(2));
         assertTrue(skipList.search(0));
 
-        skipList.delete(5);
+        assertFalse(skipList.delete(23));
+        assertTrue(skipList.delete(5));
 
         assertFalse(skipList.search(5));
+        assertFalse(skipList.delete(5));
     }
 
     @Test

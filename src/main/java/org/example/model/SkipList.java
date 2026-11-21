@@ -77,17 +77,17 @@ public class SkipList {
         return current != null && current.value == value;
     }
 
-    public void delete(int value) {
+    public boolean delete(int value) {
         SkipListNode[] update = new SkipListNode[maxLevel + 1];
         SkipListNode current = this.head;
 
         if (this.head.value > value) {
-            return;
+            return false;
         }
 
         if (this.head.value == value) {
             this.head = head.forward[0];
-            return;
+            return true;
         }
 
         for (int i = maxLevel; i >= 0; i--) {
@@ -101,7 +101,9 @@ public class SkipList {
                 if (update[i].forward[i] != current) break;
                 update[i].forward[i] = current.forward[i];
             }
+            return true;
         }
+        return false;
     }
 
     private SkipListNode seekAndStopBeforeTarget(SkipListNode current, int value, int i) {
