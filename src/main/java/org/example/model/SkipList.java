@@ -1,5 +1,7 @@
 package org.example.model;
 
+import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.Random;
 
 //based on: https://www.baeldung.com/java-skiplist
@@ -10,7 +12,7 @@ public class SkipList {
 
     public SkipList() {
         this.maxLevel = 8;
-        this.head = new SkipListNode(0, maxLevel);
+        this.head = new SkipListNode(0, maxLevel, Instant.now().toEpochMilli());
         this.random = new Random();
     }
 
@@ -20,16 +22,18 @@ public class SkipList {
 
         //if smaller than head - insert in front of it
         if (value <= head.value) {
-            SkipListNode newNode = new SkipListNode(value, maxLevel);
+            SkipListNode newNode = new SkipListNode(value, maxLevel, Instant.now().toEpochMilli());
             for (int i = maxLevel; i >= 0; i--) {
                 newNode.forward[i] = head;
             }
             this.head = newNode;
+            //in theory there is an exploit here that would allow polluting memory by inserting new nodes one in front of the other
+            //but dropping links in former head would be messy, so it's an accepted risk
         } else {
 
             //if there is only one element - auto add current element to the back and skip rest of the logic
             if (current.forward[0] == null) {
-                SkipListNode newTerminalNode = new SkipListNode(value, maxLevel);
+                SkipListNode newTerminalNode = new SkipListNode(value, maxLevel, Instant.now().toEpochMilli());
                 for (int i = maxLevel; i >= 0; i--) {
                     current.forward[i] = newTerminalNode;
                 }
@@ -45,7 +49,7 @@ public class SkipList {
                     final int lvl = getRandomLevel();
 
                     //to each of closest smaller items on each level replace next node link
-                    SkipListNode newNode = new SkipListNode(value, lvl);
+                    SkipListNode newNode = new SkipListNode(value, lvl, Instant.now().toEpochMilli());
                     for (int i = 0; i <= lvl; i++) {
                         newNode.forward[i] = update[i].forward[i];
                         update[i].forward[i] = newNode;
@@ -66,11 +70,9 @@ public class SkipList {
             return true;
         }
 
-        //find and stop before desired value
         for (int i = maxLevel; i >= 0; i--) {
             current = seekAndStopBeforeTarget(current, value, i);
         }
-        //take desired value
         current = current.forward[0];
         return current != null && current.value == value;
     }
