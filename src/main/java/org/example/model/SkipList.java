@@ -29,8 +29,9 @@ public class SkipList {
 
             //if there is only one element - auto add current element to the back and skip rest of the logic
             if (current.forward[0] == null) {
+                SkipListNode newTerminalNode = new SkipListNode(value, maxLevel);
                 for (int i = maxLevel; i >= 0; i--) {
-                    current.forward[i] = new SkipListNode(value, i);
+                    current.forward[i] = newTerminalNode;
                 }
             } else {
                 for (int i = maxLevel; i >= 0; i--) {
