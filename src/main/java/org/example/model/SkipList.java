@@ -16,6 +16,8 @@ public class SkipList <T extends Comparable<? super T>> {
         this.random = new Random();
     }
 
+    //TODO: add convenience fields/methods like length
+
     public void insert(T value) {
 
 
