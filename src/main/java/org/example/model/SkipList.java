@@ -5,23 +5,23 @@ import java.time.ZonedDateTime;
 import java.util.Random;
 
 //based on: https://www.baeldung.com/java-skiplist
-public class SkipList {
-    private SkipListNode head;
+public class SkipList <T extends Comparable<? super T>> {
+    private SkipListNode<T> head;
     private final int maxLevel;
     private final Random random;
 
-    public SkipList(final SkipListNode headNode, final int maxLevel) {
+    public SkipList(final SkipListNode<T> headNode, final int maxLevel) {
         this.maxLevel = maxLevel;
         this.head = headNode;
         this.random = new Random();
     }
 
-    public void insert(int value) {
+    public void insert(T value) {
 
 
         //if smaller than head - insert in front of it
-        if (value <= head.value) {
-            SkipListNode newNode = new SkipListNode(value, maxLevel, Instant.now().toEpochMilli());
+        if (value.compareTo(head.value) <= 0) {
+            SkipListNode<T> newNode = new SkipListNode<T>(value, maxLevel, Instant.now().toEpochMilli());
             for (int i = maxLevel; i >= 0; i--) {
                 newNode.forward[i] = head;
             }
@@ -34,7 +34,7 @@ public class SkipList {
 
         //if there is only one element - auto add current element to the back and skip rest of the logic
         if (head.forward[0] == null) {
-            SkipListNode newTerminalNode = new SkipListNode(value, maxLevel, Instant.now().toEpochMilli());
+            SkipListNode<T> newTerminalNode = new SkipListNode<T>(value, maxLevel, Instant.now().toEpochMilli());
             for (int i = maxLevel; i >= 0; i--) {
                 head.forward[i] = newTerminalNode;
             }
@@ -42,8 +42,8 @@ public class SkipList {
             return;
         }
 
-        SkipListNode[] update = new SkipListNode[maxLevel + 1];
-        SkipListNode current = this.head;
+        SkipListNode<T>[] update = new SkipListNode[maxLevel + 1];
+        SkipListNode<T> current = this.head;
 
         for (int i = maxLevel; i >= 0; i--) {
             current = seekAndStopBeforeTarget(current, value, i);
@@ -56,7 +56,7 @@ public class SkipList {
             final int lvl = getRandomLevel();
 
             //to each of closest smaller items on each level replace next node link
-            SkipListNode newNode = new SkipListNode(value, lvl, Instant.now().toEpochMilli());
+            SkipListNode<T> newNode = new SkipListNode<T>(value, lvl, Instant.now().toEpochMilli());
             for (int i = 0; i <= lvl; i++) {
                 newNode.forward[i] = update[i].forward[i];
                 update[i].forward[i] = newNode;
@@ -66,17 +66,17 @@ public class SkipList {
 
     }
 
-    public boolean search(int value) {
+    public boolean search(T value) {
 
-        if (this.head.value > value) {
+        if (this.head.value.compareTo(value) > 0) {
             return false;
         }
 
-        if (this.head.value == value) {
+        if (this.head.value.compareTo(value) == 0) {
             return true;
         }
 
-        SkipListNode current = this.head;
+        SkipListNode<T> current = this.head;
 
         for (int i = maxLevel; i >= 0; i--) {
             current = seekAndStopBeforeTarget(current, value, i);
@@ -85,19 +85,19 @@ public class SkipList {
         return current != null && current.value == value;
     }
 
-    public boolean delete(int value) {
+    public boolean delete(T value) {
 
-        if (this.head.value > value) {
+        if (this.head.value.compareTo(value) > 0) {
             return false;
         }
 
-        if (this.head.value == value) {
+        if (this.head.value.compareTo(value) == 0) {
             this.head = head.forward[0];
             return true;
         }
 
-        SkipListNode current = this.head;
-        SkipListNode[] update = new SkipListNode[maxLevel + 1];
+        SkipListNode<T> current = this.head;
+        SkipListNode<T>[] update = new SkipListNode[maxLevel + 1];
 
         for (int i = maxLevel; i >= 0; i--) {
             current = seekAndStopBeforeTarget(current, value, i);
@@ -105,7 +105,7 @@ public class SkipList {
         }
         current = current.forward[0];
 
-        if (current != null && current.value == value) {
+        if (current != null && current.value.compareTo(value) == 0) {
             for (int i = 0; i <= maxLevel; i++) {
                 if (update[i].forward[i] != current) break;
                 update[i].forward[i] = current.forward[i];
@@ -115,8 +115,8 @@ public class SkipList {
         return false;
     }
 
-    private SkipListNode seekAndStopBeforeTarget(SkipListNode current, int value, int i) {
-        while (current.forward[i] != null && current.forward[i].value < value) {
+    private SkipListNode<T> seekAndStopBeforeTarget(SkipListNode<T> current, T value, int i) {
+        while (current.forward[i] != null && current.forward[i].value.compareTo(value) < 0) {
             current = current.forward[i];
         }
 

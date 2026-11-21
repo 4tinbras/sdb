@@ -13,7 +13,8 @@ class SkipListTest {
 
     @Test
     void whenInsertValueBetweenMinMax_andLaterRemove_thenAdd_and_ThenRemove() {
-        SkipList skipList = new SkipList(new SkipListNode(0, MAX_LEVEL, Instant.now().toEpochMilli()), MAX_LEVEL);
+        SkipList<Integer> skipList = new SkipList<Integer>(
+                new SkipListNode<Integer>(0, MAX_LEVEL, Instant.now().toEpochMilli()), MAX_LEVEL);
         skipList.insert(5);
         skipList.insert(11);
         skipList.insert(7);
@@ -34,7 +35,7 @@ class SkipListTest {
 
     @Test
     void whenInsertSmallerThanHead_andRemoveLater_thenFindAtFirst_andNotFindAtSecondTime() {
-        SkipList skipList = new SkipList(new SkipListNode(0, MAX_LEVEL, Instant.now().toEpochMilli()), MAX_LEVEL);
+        SkipList<Integer> skipList = new SkipList<Integer>(new SkipListNode<Integer>(0, MAX_LEVEL, Instant.now().toEpochMilli()), MAX_LEVEL);
         skipList.insert(-1);
 
         assertTrue(skipList.search(-1));
