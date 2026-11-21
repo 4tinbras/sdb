@@ -36,6 +36,21 @@ class SkipListTest {
     }
 
     @Test
+    void whenDuplicatesAttemptInsertion_thenPreventDuplicates() {
+        SkipList<Integer> skipList = new SkipList<Integer>(
+                new SkipListNode<Integer>(0, MAX_LEVEL, Instant.now().toEpochMilli()), MAX_LEVEL);
+        skipList.insert(11);
+        skipList.insert(7);
+        skipList.insert(2);
+        skipList.insert(2);
+
+        assertTrue(skipList.search(2));
+
+        skipList.delete(2);
+        assertFalse(skipList.search(2));
+    }
+
+    @Test
     void whenInsertSmallerThanHead_andRemoveLater_thenFindAtFirst_andNotFindAtSecondTime() {
         SkipList<Integer> skipList = new SkipList<Integer>(new SkipListNode<Integer>(0, MAX_LEVEL, Instant.now().toEpochMilli()), MAX_LEVEL);
         skipList.insert(-1);
