@@ -17,8 +17,7 @@ public class SkipList {
     }
 
     public void insert(int value) {
-        SkipListNode[] update = new SkipListNode[maxLevel + 1];
-        SkipListNode current = this.head;
+
 
         //if smaller than head - insert in front of it
         if (value <= head.value) {
@@ -29,38 +28,45 @@ public class SkipList {
             this.head = newNode;
             //in theory there is an exploit here that would allow polluting memory by inserting new nodes one in front of the other
             //but dropping links in former head would be messy, so it's an accepted risk
-        } else {
+            return;
+        }
 
-            //if there is only one element - auto add current element to the back and skip rest of the logic
-            if (current.forward[0] == null) {
-                SkipListNode newTerminalNode = new SkipListNode(value, maxLevel, Instant.now().toEpochMilli());
-                for (int i = maxLevel; i >= 0; i--) {
-                    current.forward[i] = newTerminalNode;
-                }
-            } else {
-                for (int i = maxLevel; i >= 0; i--) {
-                    current = seekAndStopBeforeTarget(current, value, i);
-                    update[i] = current;
-                }
 
-                current = current.forward[0];
+        //if there is only one element - auto add current element to the back and skip rest of the logic
+        if (head.forward[0] == null) {
+            SkipListNode newTerminalNode = new SkipListNode(value, maxLevel, Instant.now().toEpochMilli());
+            for (int i = maxLevel; i >= 0; i--) {
+                head.forward[i] = newTerminalNode;
+            }
 
-                if (current == null || current.value != value) {
-                    final int lvl = getRandomLevel();
+            return;
+        }
 
-                    //to each of closest smaller items on each level replace next node link
-                    SkipListNode newNode = new SkipListNode(value, lvl, Instant.now().toEpochMilli());
-                    for (int i = 0; i <= lvl; i++) {
-                        newNode.forward[i] = update[i].forward[i];
-                        update[i].forward[i] = newNode;
-                    }
-                }
+        SkipListNode[] update = new SkipListNode[maxLevel + 1];
+        SkipListNode current = this.head;
+
+        for (int i = maxLevel; i >= 0; i--) {
+            current = seekAndStopBeforeTarget(current, value, i);
+            update[i] = current;
+        }
+
+        current = current.forward[0];
+
+        if (current == null || current.value != value) {
+            final int lvl = getRandomLevel();
+
+            //to each of closest smaller items on each level replace next node link
+            SkipListNode newNode = new SkipListNode(value, lvl, Instant.now().toEpochMilli());
+            for (int i = 0; i <= lvl; i++) {
+                newNode.forward[i] = update[i].forward[i];
+                update[i].forward[i] = newNode;
             }
         }
+
+
     }
 
     public boolean search(int value) {
-        SkipListNode current = this.head;
 
         if (this.head.value > value) {
             return false;
@@ -69,6 +75,8 @@ public class SkipList {
         if (this.head.value == value) {
             return true;
         }
+
+        SkipListNode current = this.head;
 
         for (int i = maxLevel; i >= 0; i--) {
             current = seekAndStopBeforeTarget(current, value, i);
@@ -78,8 +86,6 @@ public class SkipList {
     }
 
     public boolean delete(int value) {
-        SkipListNode[] update = new SkipListNode[maxLevel + 1];
-        SkipListNode current = this.head;
 
         if (this.head.value > value) {
             return false;
@@ -89,6 +95,9 @@ public class SkipList {
             this.head = head.forward[0];
             return true;
         }
+
+        SkipListNode current = this.head;
+        SkipListNode[] update = new SkipListNode[maxLevel + 1];
 
         for (int i = maxLevel; i >= 0; i--) {
             current = seekAndStopBeforeTarget(current, value, i);
