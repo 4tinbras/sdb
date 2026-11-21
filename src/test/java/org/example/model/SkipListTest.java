@@ -2,14 +2,18 @@ package org.example.model;
 
 import org.junit.jupiter.api.Test;
 
+import java.time.Instant;
+
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SkipListTest {
 
+    private final static int MAX_LEVEL = 8;
+
     @Test
     void whenInsertValueBetweenMinMax_andLaterRemove_thenAdd_and_ThenRemove() {
-        SkipList skipList = new SkipList();
+        SkipList skipList = new SkipList(new SkipListNode(0, MAX_LEVEL, Instant.now().toEpochMilli()), MAX_LEVEL);
         skipList.insert(5);
         skipList.insert(11);
         skipList.insert(7);
@@ -30,7 +34,7 @@ class SkipListTest {
 
     @Test
     void whenInsertSmallerThanHead_andRemoveLater_thenFindAtFirst_andNotFindAtSecondTime() {
-        SkipList skipList = new SkipList();
+        SkipList skipList = new SkipList(new SkipListNode(0, MAX_LEVEL, Instant.now().toEpochMilli()), MAX_LEVEL);
         skipList.insert(-1);
 
         assertTrue(skipList.search(-1));

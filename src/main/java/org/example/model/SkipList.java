@@ -10,9 +10,9 @@ public class SkipList {
     private final int maxLevel;
     private final Random random;
 
-    public SkipList() {
-        this.maxLevel = 8;
-        this.head = new SkipListNode(0, maxLevel, Instant.now().toEpochMilli());
+    public SkipList(final SkipListNode headNode, final int maxLevel) {
+        this.maxLevel = maxLevel;
+        this.head = headNode;
         this.random = new Random();
     }
 
