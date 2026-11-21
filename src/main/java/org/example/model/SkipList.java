@@ -57,6 +57,10 @@ public class SkipList {
     public boolean search(int value) {
         SkipListNode current = this.head;
 
+        if (this.head.value > value) {
+            return false;
+        }
+
         if (this.head.value == value) {
             return true;
         }
@@ -73,6 +77,15 @@ public class SkipList {
     public void delete(int value) {
         SkipListNode[] update = new SkipListNode[maxLevel + 1];
         SkipListNode current = this.head;
+
+        if (this.head.value > value) {
+            return;
+        }
+
+        if (this.head.value == value) {
+            this.head = head.forward[0];
+            return;
+        }
 
         for (int i = maxLevel; i >= 0; i--) {
             current = seekAndStopBeforeTarget(current, value, i);
