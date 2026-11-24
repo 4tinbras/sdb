@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class SqlCommandParserTest {
 
+    //_______________________________SELECT_TESTS_______________________________//
     @Test
     void givenValidSelectStmt_whenParse_thenCorrect() {
         String validSqlSelectStmt = "SELECT id FROM user";
@@ -38,5 +39,27 @@ class SqlCommandParserTest {
         SqlCommandParser parser = new SqlCommandParser();
 
         assertThrows(RuntimeException.class, () -> parser.parseSqlCommand(invalidSelectStmt));
+    }
+
+    //_______________________________INSERT_TESTS_______________________________//
+
+    @Test
+    void givenValidInsertStmt_whenParse_thenCorrect() {
+        String validSqlInsertStmt = "INSERT INTO table (column) VALUES (value)";
+        SqlCommandParser parser = new SqlCommandParser();
+        SqlCommand outcome = parser.parseSqlCommand(validSqlInsertStmt);
+
+        assertEquals(SqlCommand.CommandType.INSERT_INTO, outcome.getCommandType());
+        assertEquals("column", outcome.getCommandTargetOperands().getFirst());
+        assertEquals("value", outcome.getCommandValueOperands().getFirst());
+        assertEquals("table", outcome.getTableName());
+    }
+
+    @Test
+    void givenInvalidInsertStmt_whenParse_thenThrowException() {
+        String validSqlInsertStmt = "INSERT table (column) VALUES (value)";
+        SqlCommandParser parser = new SqlCommandParser();
+
+        assertThrows(RuntimeException.class, () -> parser.parseSqlCommand(validSqlInsertStmt));
     }
 }

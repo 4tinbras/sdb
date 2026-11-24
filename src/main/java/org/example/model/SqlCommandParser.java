@@ -21,24 +21,64 @@ public class SqlCommandParser extends SqlcommandBaseListener {
 
             SqlcommandLexer lexer = new SqlcommandLexer(CharStreams.fromString(input));
             SqlcommandParser parser = new SqlcommandParser(new CommonTokenStream(lexer));
-            SqlcommandParser.SelectstmtContext ctx = parser.selectstmt();
+            SqlcommandParser.SqlstmtContext sqlstmtContext = parser.sqlstmt();
 
-            if (ctx.getChildCount() != 4) {
+            if (parser.getContext() != null) {
                 throw new RuntimeException("Invalid sql command string.");
             }
 
-            List<String> columnSelectors = ctx.selector().children.stream()
-                    .filter(item -> !item.getText().equals(" ") && !item.getText().equals(","))
-                    .map(ParseTree::getText)
-                    .toList();
+            if (sqlstmtContext.children.getFirst() instanceof SqlcommandParser.SelectstmtContext) {
+                SqlcommandParser.SelectstmtContext selectstmtCtx =
+                        (SqlcommandParser.SelectstmtContext) sqlstmtContext.children.getFirst();
 
-            SqlCommand newCommand = new SqlCommand(
-                    SqlCommand.CommandType.SELECT, ctx.getStop().getText(),
-                    columnSelectors, null, null);
+                if (selectstmtCtx.getChildCount() != 4) {
+                    throw new RuntimeException("Invalid sql command string.");
+                }
 
-            return newCommand;
+                return parseSelectStatement(selectstmtCtx);
+            } else if (sqlstmtContext.children.getFirst() instanceof SqlcommandParser.InsertstmtContext) {
+                SqlcommandParser.InsertstmtContext insertstmtCtx =
+                        (SqlcommandParser.InsertstmtContext) sqlstmtContext.children.getFirst();
+
+                if (insertstmtCtx.getChildCount() < 8) {
+                    throw new RuntimeException("Invalid sql command string.");
+                }
+
+                return parseInsertStatement(insertstmtCtx);
+            }
+
+            throw new RuntimeException("Invalid sql command string.");
         } catch (Exception ex) {
             throw new RuntimeException("Error parsing SQL command", ex);
         }
+    }
+
+    private SqlCommand parseSelectStatement(SqlcommandParser.SelectstmtContext ctx) {
+        List<String> columnSelectors = ctx.selector().children.stream()
+                .filter(item -> !item.getText().equals(" ") && !item.getText().equals(","))
+                .map(ParseTree::getText)
+                .toList();
+
+        SqlCommand newCommand = new SqlCommand(
+                SqlCommand.CommandType.SELECT, ctx.getStop().getText(),
+                columnSelectors, null, null);
+
+        return newCommand;
+    }
+
+    private SqlCommand parseInsertStatement(SqlcommandParser.InsertstmtContext ctx) {
+        List<String> columnSelectors = ctx.children.stream()
+                .filter(item -> !item.getText().equals(" (") && !item.getText().equals("(") && !item.getText().equals(")") && !item.getText().equals(" "))
+                .map(ParseTree::getText)
+                .toList();
+
+        List<String> columns = columnSelectors.subList(2, columnSelectors.indexOf(" VALUES "));
+        List<String> values = columnSelectors.subList(columnSelectors.indexOf(" VALUES ") + 1, columnSelectors.size());
+
+        SqlCommand newCommand = new SqlCommand(
+                SqlCommand.CommandType.INSERT_INTO, ctx.getChild(1).getText(),
+                columns, values, null);
+
+        return newCommand;
     }
 }
