@@ -11,13 +11,15 @@ repositories {
 }
 
 dependencies {
+    def lombokVer = '1.18.46'
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: lombokVer
+    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: lombokVer
+
+    antlr("org.antlr:antlr4:4.13.2")
+
     testImplementation platform('org.junit:junit-bom:6.0.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-
-    implementation("org.owasp.encoder:encoder:1.6.0")
-
-    antlr("org.antlr:antlr4:4.13.2")
 }
 
 //target directory for the new specialized parser
