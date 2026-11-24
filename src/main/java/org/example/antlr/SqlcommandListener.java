@@ -36,4 +36,32 @@ public interface SqlcommandListener extends ParseTreeListener {
      * @param ctx the parse tree
      */
     void exitSelectstmt(SqlcommandParser.SelectstmtContext ctx);
+
+    /**
+     * Enter a parse tree produced by {@link SqlcommandParser#insertstmt}.
+     *
+     * @param ctx the parse tree
+     */
+    void enterInsertstmt(SqlcommandParser.InsertstmtContext ctx);
+
+    /**
+     * Exit a parse tree produced by {@link SqlcommandParser#insertstmt}.
+     *
+     * @param ctx the parse tree
+     */
+    void exitInsertstmt(SqlcommandParser.InsertstmtContext ctx);
+
+    /**
+     * Enter a parse tree produced by {@link SqlcommandParser#sqlstmt}.
+     *
+     * @param ctx the parse tree
+     */
+    void enterSqlstmt(SqlcommandParser.SqlstmtContext ctx);
+
+    /**
+     * Exit a parse tree produced by {@link SqlcommandParser#sqlstmt}.
+     *
+     * @param ctx the parse tree
+     */
+    void exitSqlstmt(SqlcommandParser.SqlstmtContext ctx);
 }

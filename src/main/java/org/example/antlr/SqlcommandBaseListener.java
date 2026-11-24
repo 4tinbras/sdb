@@ -56,6 +56,42 @@ public class SqlcommandBaseListener implements SqlcommandListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override
+    public void enterInsertstmt(SqlcommandParser.InsertstmtContext ctx) {
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation does nothing.</p>
+     */
+    @Override
+    public void exitInsertstmt(SqlcommandParser.InsertstmtContext ctx) {
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation does nothing.</p>
+     */
+    @Override
+    public void enterSqlstmt(SqlcommandParser.SqlstmtContext ctx) {
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation does nothing.</p>
+     */
+    @Override
+    public void exitSqlstmt(SqlcommandParser.SqlstmtContext ctx) {
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation does nothing.</p>
+     */
+    @Override
     public void enterEveryRule(ParserRuleContext ctx) {
     }
 
@@ -81,6 +117,6 @@ public class SqlcommandBaseListener implements SqlcommandListener {
      * {@inheritDoc}
      *
      * <p>The default implementation does nothing.</p>
-     */
-    @Override public void visitErrorNode(ErrorNode node) { }
+	 */
+	@Override public void visitErrorNode(ErrorNode node) { }
 }
