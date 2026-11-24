@@ -14,7 +14,19 @@ class SqlCommandParserTest {
         SqlCommand outcome = parser.parseSqlCommand(validSqlSelectStmt);
 
         assertEquals(SqlCommand.CommandType.SELECT, outcome.getCommandType());
-        assertEquals("id", outcome.getCommandTargetOperands()[0]);
+        assertEquals("id", outcome.getCommandTargetOperands().getFirst());
+        assertEquals("user", outcome.getTableName());
+    }
+
+    @Test
+    void givenMultipleColsInSelectStmt_whenParse_thenCorrect() {
+        String validSqlSelectStmt = "SELECT id, name FROM user";
+        SqlCommandParser parser = new SqlCommandParser();
+        SqlCommand outcome = parser.parseSqlCommand(validSqlSelectStmt);
+
+        assertEquals(SqlCommand.CommandType.SELECT, outcome.getCommandType());
+        assertEquals("id", outcome.getCommandTargetOperands().getFirst());
+        assertEquals("name", outcome.getCommandTargetOperands().getLast());
         assertEquals("user", outcome.getTableName());
     }
 

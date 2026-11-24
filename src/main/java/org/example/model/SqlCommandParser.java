@@ -2,9 +2,12 @@ package org.example.model;
 
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.example.antlr.SqlcommandBaseListener;
 import org.example.antlr.SqlcommandLexer;
 import org.example.antlr.SqlcommandParser;
+
+import java.util.List;
 
 public class SqlCommandParser extends SqlcommandBaseListener {
 
@@ -24,9 +27,14 @@ public class SqlCommandParser extends SqlcommandBaseListener {
                 throw new RuntimeException("Invalid sql command string.");
             }
 
+            List<String> columnSelectors = ctx.selector().children.stream()
+                    .filter(item -> !item.getText().equals(" ") && !item.getText().equals(","))
+                    .map(ParseTree::getText)
+                    .toList();
+
             SqlCommand newCommand = new SqlCommand(
                     SqlCommand.CommandType.SELECT, ctx.getStop().getText(),
-                    new String[]{ctx.selector().getStart().getText()}, null, null);
+                    columnSelectors, null, null);
 
             return newCommand;
         } catch (Exception ex) {
