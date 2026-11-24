@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'antlr'
 }
 
 group = 'org.example'
@@ -10,10 +11,22 @@ repositories {
 }
 
 dependencies {
+    def lombokVer = '1.18.46'
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: lombokVer
+    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: lombokVer
+
+    antlr("org.antlr:antlr4:4.13.2")
+
     testImplementation platform('org.junit:junit-bom:6.0.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
+
+//target directory for the new specialized parser
+generateGrammarSource {
+    outputDirectory = file("src/main/java/org/example/antlr")
+}
+
 
 test {
     useJUnitPlatform()

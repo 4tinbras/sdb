@@ -1,7 +1,6 @@
 package org.example.model;
 
 import java.time.Instant;
-import java.time.ZonedDateTime;
 import java.util.Random;
 
 //based on: https://www.baeldung.com/java-skiplist
@@ -128,7 +127,7 @@ public class SkipList <T extends Comparable<? super T>> {
     private int getRandomLevel() {
         int doesContinue = 1;
         int counter = -1; //in order to start with 0
-        while(doesContinue > 0) {
+        while (doesContinue > 0 && counter <= maxLevel) {
             counter++;
             doesContinue = random.nextInt(2);
         }
