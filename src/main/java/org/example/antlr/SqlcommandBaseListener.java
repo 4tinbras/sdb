@@ -82,7 +82,5 @@ public class SqlcommandBaseListener implements SqlcommandListener {
      *
      * <p>The default implementation does nothing.</p>
      */
-    @Override
-    public void visitErrorNode(ErrorNode node) {
-    }
+    @Override public void visitErrorNode(ErrorNode node) { }
 }

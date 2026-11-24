@@ -1,7 +1,10 @@
 T__0=1
 T__1=2
-SELECT_ALL=3
-ID=4
-WS=5
-'SELECT '=1
-' FROM '=2
+T__2=3
+LIST_SEP=4
+SELECT_ALL=5
+ID=6
+WS=7
+' '=1
+'SELECT '=2
+' FROM '=3

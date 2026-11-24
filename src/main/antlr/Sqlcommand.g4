@@ -4,9 +4,10 @@ grammar Sqlcommand;
 package org.example.antlr;
 }
 
-selector    : ID|SELECT_ALL ;
+selector    : ID (LIST_SEP ' ' ID)* | SELECT_ALL ;
 selectstmt  : 'SELECT ' selector ' FROM ' ID ;
 
+LIST_SEP    : [,] ;
 SELECT_ALL  : [*] ;
 ID          : [a-z]+ ;
 WS          : [ \t\r\n]+ -> skip ;
