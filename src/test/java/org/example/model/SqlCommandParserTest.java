@@ -57,7 +57,7 @@ class SqlCommandParserTest {
 
     @Test
     void givenInvalidInsertStmt_whenParse_thenThrowException() {
-        String validSqlInsertStmt = "INSERT VALUES (value)";
+        String validSqlInsertStmt = "INSERT table VALUES (value)";
         SqlCommandParser parser = new SqlCommandParser();
 
         assertThrows(RuntimeException.class, () -> parser.parseSqlCommand(validSqlInsertStmt));

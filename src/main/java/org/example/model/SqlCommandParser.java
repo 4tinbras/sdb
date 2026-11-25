@@ -2,6 +2,7 @@ package org.example.model;
 
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.tree.ErrorNodeImpl;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.example.antlr.SqlcommandBaseListener;
 import org.example.antlr.SqlcommandLexer;
@@ -40,7 +41,7 @@ public class SqlCommandParser extends SqlcommandBaseListener {
                 SqlcommandParser.InsertstmtContext insertstmtCtx =
                         (SqlcommandParser.InsertstmtContext) sqlstmtContext.children.getFirst();
 
-                if (insertstmtCtx.getChildCount() < 8) {
+                if (insertstmtCtx.children.stream().anyMatch(child -> child instanceof ErrorNodeImpl)) {
                     throw new RuntimeException("Invalid sql command string.");
                 }
 
