@@ -76,7 +76,7 @@ public class SqlCommandParser extends SqlcommandBaseListener {
         List<String> values = columnSelectors.subList(columnSelectors.indexOf(" VALUES ") + 1, columnSelectors.size());
 
         SqlCommand newCommand = new SqlCommand(
-                SqlCommand.CommandType.INSERT_INTO, ctx.getChild(1).getText(),
+                SqlCommand.CommandType.INSERT_INTO, ctx.getChild(2).getText(),
                 columns, values, null);
 
         return newCommand;
