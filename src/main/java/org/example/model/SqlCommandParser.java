@@ -32,7 +32,7 @@ public class SqlCommandParser extends SqlcommandBaseListener {
                 SqlcommandParser.SelectstmtContext selectstmtCtx =
                         (SqlcommandParser.SelectstmtContext) sqlstmtContext.children.getFirst();
 
-                if (selectstmtCtx.getChildCount() != 4) {
+                if (selectstmtCtx.children.stream().anyMatch(child -> child instanceof ErrorNodeImpl)) {
                     throw new RuntimeException("Invalid sql command string.");
                 }
 
