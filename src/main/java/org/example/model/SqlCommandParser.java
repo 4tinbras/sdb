@@ -55,7 +55,7 @@ public class SqlCommandParser extends SqlcommandBaseListener {
 
     private SqlCommand parseSelectStatement(SqlcommandParser.SelectstmtContext ctx) {
         List<String> columnSelectors = ctx.selector().children.stream()
-                .filter(item -> !item.getText().equals(" ") && !item.getText().equals(","))
+                .filter(item -> !item.getText().equals(","))
                 .map(ParseTree::getText)
                 .toList();
 
@@ -68,12 +68,12 @@ public class SqlCommandParser extends SqlcommandBaseListener {
 
     private SqlCommand parseInsertStatement(SqlcommandParser.InsertstmtContext ctx) {
         List<String> columnSelectors = ctx.children.stream()
-                .filter(item -> !item.getText().equals(" (") && !item.getText().equals("(") && !item.getText().equals(")") && !item.getText().equals(" "))
+                .filter(item -> !item.getText().equals("(") && !item.getText().equals(")"))
                 .map(ParseTree::getText)
                 .toList();
 
-        List<String> columns = columnSelectors.subList(2, columnSelectors.indexOf(" VALUES "));
-        List<String> values = columnSelectors.subList(columnSelectors.indexOf(" VALUES ") + 1, columnSelectors.size());
+        List<String> columns = columnSelectors.subList(3, columnSelectors.indexOf("VALUES"));
+        List<String> values = columnSelectors.subList(columnSelectors.indexOf("VALUES") + 1, columnSelectors.size());
 
         SqlCommand newCommand = new SqlCommand(
                 SqlCommand.CommandType.INSERT_INTO, ctx.getChild(2).getText(),
