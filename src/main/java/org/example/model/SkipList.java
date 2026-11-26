@@ -76,16 +76,16 @@ public class SkipList<K extends Comparable<? super K>, V> {
 
     /**
      * @param key - used to query key set
-     * @return - In case of matching key - returns associated value. In case of no matching key returns null.
+     * @return - In case of matching key - returns associated node. In case of no matching key returns null.
      */
-    public V search(K key) {
+    public SkipListNode<K, V> search(K key) {
 
         if (this.head.key.compareTo(key) > 0) {
             return null;
         }
 
         if (this.head.key.compareTo(key) == 0) {
-            return this.head.value;
+            return this.head;
         }
 
         SkipListNode<K, V> current = this.head;
@@ -99,7 +99,7 @@ public class SkipList<K extends Comparable<? super K>, V> {
             return null;
         }
 
-        return current.value;
+        return current;
     }
 
     public boolean delete(K key) {

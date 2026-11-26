@@ -21,11 +21,11 @@ class SkipListTest {
         skipList.insert(7, 7);
         skipList.insert(2, 2);
 
-        assertEquals(5, skipList.search(5));
-        assertEquals(11, skipList.search(11));
-        assertEquals(7, skipList.search(7));
-        assertEquals(2, skipList.search(2));
-        assertEquals(0, skipList.search(0));
+        assertEquals(5, skipList.search(5).value);
+        assertEquals(11, skipList.search(11).value);
+        assertEquals(7, skipList.search(7).value);
+        assertEquals(2, skipList.search(2).value);
+        assertEquals(0, skipList.search(0).value);
 
         assertFalse(skipList.delete(23));
         assertTrue(skipList.delete(5));
@@ -42,9 +42,9 @@ class SkipListTest {
         skipList.insert(7, "Oranges");
         skipList.insert(5, "Apples");
 
-        assertEquals("Apples", skipList.search(5));
-        assertEquals("Pears", skipList.search(11));
-        assertEquals("Oranges", skipList.search(7));
+        assertEquals("Apples", skipList.search(5).value);
+        assertEquals("Pears", skipList.search(11).value);
+        assertEquals("Oranges", skipList.search(7).value);
 
         assertFalse(skipList.delete(23));
         assertTrue(skipList.delete(5));
@@ -62,7 +62,7 @@ class SkipListTest {
         skipList.insert(2, 2);
         skipList.insert(2, 2);
 
-        assertEquals(2, skipList.search(2));
+        assertEquals(2, skipList.search(2).value);
 
         skipList.delete(2);
         assertEquals(null, skipList.search(2));
@@ -73,7 +73,7 @@ class SkipListTest {
         SkipList<Integer, Integer> skipList = new SkipList<Integer, Integer>(new SkipListNode<Integer, Integer>(0, 0, MAX_LEVEL, Instant.now().toEpochMilli()), MAX_LEVEL);
         skipList.insert(-1, -1);
 
-        assertEquals(-1, skipList.search(-1));
+        assertEquals(-1, skipList.search(-1).value);
 
         skipList.delete(-1);
 
@@ -96,9 +96,9 @@ class SkipListTest {
         skipList.insert(afterInitialHeadZdt, afterInitialHeadZdt);
         skipList.insert(beforeInitialHeadZdt, beforeInitialHeadZdt);
 
-        assertEquals(beforeInitialHeadZdt, skipList.search(beforeInitialHeadZdt));
-        assertEquals(initialHeadZdt, skipList.search(initialHeadZdt));
-        assertEquals(afterInitialHeadZdt, skipList.search(afterInitialHeadZdt));
+        assertEquals(beforeInitialHeadZdt, skipList.search(beforeInitialHeadZdt).value);
+        assertEquals(initialHeadZdt, skipList.search(initialHeadZdt).value);
+        assertEquals(afterInitialHeadZdt, skipList.search(afterInitialHeadZdt).value);
 
         assertTrue(skipList.delete(afterInitialHeadZdt));
         assertEquals(null, skipList.search(afterInitialHeadZdt));
