@@ -6,8 +6,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class SkipListTest {
 
@@ -15,51 +14,70 @@ class SkipListTest {
 
     @Test
     void whenInsertValueBetweenMinMax_andLaterRemove_thenAdd_and_ThenRemove() {
-        SkipList<Integer> skipList = new SkipList<Integer>(
-                new SkipListNode<Integer>(0, MAX_LEVEL, Instant.now().toEpochMilli()), MAX_LEVEL);
-        skipList.insert(5);
-        skipList.insert(11);
-        skipList.insert(7);
-        skipList.insert(2);
+        SkipList<Integer, Integer> skipList = new SkipList<Integer, Integer>(
+                new SkipListNode<Integer, Integer>(0, 0, MAX_LEVEL, Instant.now().toEpochMilli()), MAX_LEVEL);
+        skipList.insert(5, 5);
+        skipList.insert(11, 11);
+        skipList.insert(7, 7);
+        skipList.insert(2, 2);
 
-        assertTrue(skipList.search(5));
-        assertTrue(skipList.search(11));
-        assertTrue(skipList.search(7));
-        assertTrue(skipList.search(2));
-        assertTrue(skipList.search(0));
+        assertEquals(5, skipList.search(5));
+        assertEquals(11, skipList.search(11));
+        assertEquals(7, skipList.search(7));
+        assertEquals(2, skipList.search(2));
+        assertEquals(0, skipList.search(0));
 
         assertFalse(skipList.delete(23));
         assertTrue(skipList.delete(5));
 
-        assertFalse(skipList.search(5));
+        assertEquals(null, skipList.search(5));
+        assertFalse(skipList.delete(5));
+    }
+
+    @Test
+    void whenUsingDifferentTypes_thenCorrectlyMapValues() {
+        SkipList<Integer, String> skipList = new SkipList<Integer, String>(
+                new SkipListNode<Integer, String>(0, "Fruits", MAX_LEVEL, Instant.now().toEpochMilli()), MAX_LEVEL);
+        skipList.insert(11, "Pears");
+        skipList.insert(7, "Oranges");
+        skipList.insert(5, "Apples");
+
+        assertEquals("Apples", skipList.search(5));
+        assertEquals("Pears", skipList.search(11));
+        assertEquals("Oranges", skipList.search(7));
+
+        assertFalse(skipList.delete(23));
+        assertTrue(skipList.delete(5));
+
+        assertEquals(null, skipList.search(5));
         assertFalse(skipList.delete(5));
     }
 
     @Test
     void whenDuplicatesAttemptInsertion_thenPreventDuplicates() {
-        SkipList<Integer> skipList = new SkipList<Integer>(
-                new SkipListNode<Integer>(0, MAX_LEVEL, Instant.now().toEpochMilli()), MAX_LEVEL);
-        skipList.insert(11);
-        skipList.insert(7);
-        skipList.insert(2);
-        skipList.insert(2);
+        SkipList<Integer, Integer> skipList = new SkipList<Integer, Integer>(
+                new SkipListNode<Integer, Integer>(0, 0, MAX_LEVEL, Instant.now().toEpochMilli()), MAX_LEVEL);
+        skipList.insert(11, 11);
+        skipList.insert(7, 7);
+        skipList.insert(2, 2);
+        skipList.insert(2, 2);
 
-        assertTrue(skipList.search(2));
+        assertEquals(2, skipList.search(2));
 
         skipList.delete(2);
-        assertFalse(skipList.search(2));
+        assertEquals(null, skipList.search(2));
     }
 
     @Test
     void whenInsertSmallerThanHead_andRemoveLater_thenFindAtFirst_andNotFindAtSecondTime() {
-        SkipList<Integer> skipList = new SkipList<Integer>(new SkipListNode<Integer>(0, MAX_LEVEL, Instant.now().toEpochMilli()), MAX_LEVEL);
-        skipList.insert(-1);
+        SkipList<Integer, Integer> skipList = new SkipList<Integer, Integer>(new SkipListNode<Integer, Integer>(0, 0, MAX_LEVEL, Instant.now().toEpochMilli()), MAX_LEVEL);
+        skipList.insert(-1, -1);
 
-        assertTrue(skipList.search(-1));
+        assertEquals(-1, skipList.search(-1));
 
         skipList.delete(-1);
 
-        assertFalse(skipList.search(-1));
+        assertEquals(null, skipList.search(-1));
     }
 
     @Test
@@ -72,17 +90,17 @@ class SkipListTest {
         ZonedDateTime initialHeadZdt = ZonedDateTime.ofInstant(initialHead, ZoneId.systemDefault());
         ZonedDateTime afterInitialHeadZdt = ZonedDateTime.ofInstant(afterInitialHead, ZoneId.systemDefault());
 
-        SkipList<ZonedDateTime> skipList = new SkipList<ZonedDateTime>(
-                new SkipListNode<ZonedDateTime>(initialHeadZdt, MAX_LEVEL, Instant.now().toEpochMilli()), MAX_LEVEL);
+        SkipList<ZonedDateTime, ZonedDateTime> skipList = new SkipList<ZonedDateTime, ZonedDateTime>(
+                new SkipListNode<ZonedDateTime, ZonedDateTime>(initialHeadZdt, initialHeadZdt, MAX_LEVEL, Instant.now().toEpochMilli()), MAX_LEVEL);
 
-        skipList.insert(afterInitialHeadZdt);
-        skipList.insert(beforeInitialHeadZdt);
+        skipList.insert(afterInitialHeadZdt, afterInitialHeadZdt);
+        skipList.insert(beforeInitialHeadZdt, beforeInitialHeadZdt);
 
-        assertTrue(skipList.search(beforeInitialHeadZdt));
-        assertTrue(skipList.search(initialHeadZdt));
-        assertTrue(skipList.search(afterInitialHeadZdt));
+        assertEquals(beforeInitialHeadZdt, skipList.search(beforeInitialHeadZdt));
+        assertEquals(initialHeadZdt, skipList.search(initialHeadZdt));
+        assertEquals(afterInitialHeadZdt, skipList.search(afterInitialHeadZdt));
 
         assertTrue(skipList.delete(afterInitialHeadZdt));
-        assertFalse(skipList.search(afterInitialHeadZdt));
+        assertEquals(null, skipList.search(afterInitialHeadZdt));
     }
 }
