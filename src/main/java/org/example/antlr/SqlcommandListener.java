@@ -10,18 +10,18 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface SqlcommandListener extends ParseTreeListener {
     /**
-     * Enter a parse tree produced by {@link SqlcommandParser#selector}.
+     * Enter a parse tree produced by {@link SqlcommandParser#sqlstmt}.
      *
      * @param ctx the parse tree
      */
-    void enterSelector(SqlcommandParser.SelectorContext ctx);
+    void enterSqlstmt(SqlcommandParser.SqlstmtContext ctx);
 
     /**
-     * Exit a parse tree produced by {@link SqlcommandParser#selector}.
+     * Exit a parse tree produced by {@link SqlcommandParser#sqlstmt}.
      *
      * @param ctx the parse tree
      */
-    void exitSelector(SqlcommandParser.SelectorContext ctx);
+    void exitSqlstmt(SqlcommandParser.SqlstmtContext ctx);
 
     /**
      * Enter a parse tree produced by {@link SqlcommandParser#selectstmt}.
@@ -52,16 +52,16 @@ public interface SqlcommandListener extends ParseTreeListener {
     void exitInsertstmt(SqlcommandParser.InsertstmtContext ctx);
 
     /**
-     * Enter a parse tree produced by {@link SqlcommandParser#sqlstmt}.
+     * Enter a parse tree produced by {@link SqlcommandParser#selector}.
      *
      * @param ctx the parse tree
      */
-    void enterSqlstmt(SqlcommandParser.SqlstmtContext ctx);
+    void enterSelector(SqlcommandParser.SelectorContext ctx);
 
     /**
-     * Exit a parse tree produced by {@link SqlcommandParser#sqlstmt}.
+     * Exit a parse tree produced by {@link SqlcommandParser#selector}.
      *
      * @param ctx the parse tree
      */
-    void exitSqlstmt(SqlcommandParser.SqlstmtContext ctx);
+    void exitSelector(SqlcommandParser.SelectorContext ctx);
 }

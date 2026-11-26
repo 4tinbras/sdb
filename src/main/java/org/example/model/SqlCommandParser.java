@@ -2,6 +2,7 @@ package org.example.model;
 
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.tree.ErrorNodeImpl;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.example.antlr.SqlcommandBaseListener;
 import org.example.antlr.SqlcommandLexer;
@@ -31,7 +32,7 @@ public class SqlCommandParser extends SqlcommandBaseListener {
                 SqlcommandParser.SelectstmtContext selectstmtCtx =
                         (SqlcommandParser.SelectstmtContext) sqlstmtContext.children.getFirst();
 
-                if (selectstmtCtx.getChildCount() != 4) {
+                if (selectstmtCtx.children.stream().anyMatch(child -> child instanceof ErrorNodeImpl)) {
                     throw new RuntimeException("Invalid sql command string.");
                 }
 
@@ -40,7 +41,7 @@ public class SqlCommandParser extends SqlcommandBaseListener {
                 SqlcommandParser.InsertstmtContext insertstmtCtx =
                         (SqlcommandParser.InsertstmtContext) sqlstmtContext.children.getFirst();
 
-                if (insertstmtCtx.getChildCount() < 8) {
+                if (insertstmtCtx.children.stream().anyMatch(child -> child instanceof ErrorNodeImpl)) {
                     throw new RuntimeException("Invalid sql command string.");
                 }
 
@@ -55,7 +56,7 @@ public class SqlCommandParser extends SqlcommandBaseListener {
 
     private SqlCommand parseSelectStatement(SqlcommandParser.SelectstmtContext ctx) {
         List<String> columnSelectors = ctx.selector().children.stream()
-                .filter(item -> !item.getText().equals(" ") && !item.getText().equals(","))
+                .filter(item -> !item.getText().equals(","))
                 .map(ParseTree::getText)
                 .toList();
 
@@ -68,15 +69,15 @@ public class SqlCommandParser extends SqlcommandBaseListener {
 
     private SqlCommand parseInsertStatement(SqlcommandParser.InsertstmtContext ctx) {
         List<String> columnSelectors = ctx.children.stream()
-                .filter(item -> !item.getText().equals(" (") && !item.getText().equals("(") && !item.getText().equals(")") && !item.getText().equals(" "))
+                .filter(item -> !item.getText().equals("(") && !item.getText().equals(")"))
                 .map(ParseTree::getText)
                 .toList();
 
-        List<String> columns = columnSelectors.subList(2, columnSelectors.indexOf(" VALUES "));
-        List<String> values = columnSelectors.subList(columnSelectors.indexOf(" VALUES ") + 1, columnSelectors.size());
+        List<String> columns = columnSelectors.subList(3, columnSelectors.indexOf("VALUES"));
+        List<String> values = columnSelectors.subList(columnSelectors.indexOf("VALUES") + 1, columnSelectors.size());
 
         SqlCommand newCommand = new SqlCommand(
-                SqlCommand.CommandType.INSERT_INTO, ctx.getChild(1).getText(),
+                SqlCommand.CommandType.INSERT_INTO, ctx.getChild(2).getText(),
                 columns, values, null);
 
         return newCommand;

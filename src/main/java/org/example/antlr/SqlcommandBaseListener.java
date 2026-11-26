@@ -20,7 +20,7 @@ public class SqlcommandBaseListener implements SqlcommandListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override
-    public void enterSelector(SqlcommandParser.SelectorContext ctx) {
+    public void enterSqlstmt(SqlcommandParser.SqlstmtContext ctx) {
     }
 
     /**
@@ -29,7 +29,7 @@ public class SqlcommandBaseListener implements SqlcommandListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override
-    public void exitSelector(SqlcommandParser.SelectorContext ctx) {
+    public void exitSqlstmt(SqlcommandParser.SqlstmtContext ctx) {
     }
 
     /**
@@ -74,7 +74,7 @@ public class SqlcommandBaseListener implements SqlcommandListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override
-    public void enterSqlstmt(SqlcommandParser.SqlstmtContext ctx) {
+    public void enterSelector(SqlcommandParser.SelectorContext ctx) {
     }
 
     /**
@@ -83,7 +83,7 @@ public class SqlcommandBaseListener implements SqlcommandListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override
-    public void exitSqlstmt(SqlcommandParser.SqlstmtContext ctx) {
+    public void exitSelector(SqlcommandParser.SelectorContext ctx) {
     }
 
     /**
@@ -110,13 +110,11 @@ public class SqlcommandBaseListener implements SqlcommandListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override
-    public void visitTerminal(TerminalNode node) {
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
+    public void visitTerminal(TerminalNode node) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void visitErrorNode(ErrorNode node) { }
 }

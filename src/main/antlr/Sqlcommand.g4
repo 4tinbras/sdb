@@ -4,35 +4,45 @@ grammar Sqlcommand;
 package org.example.antlr;
 }
 
-selector
-    : ID (LIST_SEP ' ' ID)*
-    | SELECT_ALL
-    ;
-
-selectstmt
-    : 'SELECT ' selector ' FROM ' ID
-    ;
-
-insertstmt
-    : 'INSERT INTO ' ID (' (' ID (LIST_SEP ' ' ID)* ')')? ' VALUES ' '(' ID (LIST_SEP ' ' ID)* ')'
-    ;
-
 sqlstmt
     : selectstmt
     | insertstmt
     ;
 
+selectstmt
+    : SELECT selector FROM WORD
+    ;
+
+insertstmt
+    : INSERT INTO WORD ('(' WORD (LIST_SEP WORD)* ')')? VALUES '(' WORD (LIST_SEP WORD)* ')'
+    ;
+
+selector
+    : WORD (LIST_SEP WORD)*
+    | SELECT_ALL
+    ;
+
 LIST_SEP: [,];
 SELECT_ALL: [*];
+SELECT: 'SELECT';
+FROM: 'FROM';
+INSERT: 'INSERT';
+INTO: 'INTO';
+VALUES: 'VALUES';
 
-ID
+WORD
     : [a-z]+
     ;
 
-ALPHANUMERIC
-    : [a-z0-9]+
+NUMBER
+    : [1–9]+
     ;
 
-WS
-    : [ \t\r\n]+ -> skip
+TABULATOR
+    : [\t]+ -> skip
+    ;
+
+WHITESPACE: ' ' -> skip; // No idea why but space in normal regex is not matched
+Newline
+    : ('\r' '\n'? | '\n') -> channel (HIDDEN)
     ;

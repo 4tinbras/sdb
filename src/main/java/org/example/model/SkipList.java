@@ -4,12 +4,19 @@ import java.time.Instant;
 import java.util.Random;
 
 //based on: https://www.baeldung.com/java-skiplist
-public class SkipList <T extends Comparable<? super T>> {
-    private SkipListNode<T> head;
+
+/**
+ * Implementation of skip list that does not allow repetitions of keys.
+ *
+ * @param <K> type of keys of key-value pair
+ * @param <V> type of value of key-value pair
+ */
+public class SkipList<K extends Comparable<? super K>, V> {
+    private SkipListNode<K, V> head;
     private final int maxLevel;
     private final Random random;
 
-    public SkipList(final SkipListNode<T> headNode, final int maxLevel) {
+    public SkipList(final SkipListNode<K, V> headNode, final int maxLevel) {
         this.maxLevel = maxLevel;
         this.head = headNode;
         this.random = new Random();
@@ -17,12 +24,12 @@ public class SkipList <T extends Comparable<? super T>> {
 
     //TODO: add convenience fields/methods like length
 
-    public void insert(T value) {
+    public void insert(K key, V value) {
 
 
         //if smaller than head - insert in front of it
-        if (value.compareTo(head.value) <= 0) {
-            SkipListNode<T> newNode = new SkipListNode<T>(value, maxLevel, Instant.now().toEpochMilli());
+        if (key.compareTo(head.key) <= 0) {
+            SkipListNode<K, V> newNode = new SkipListNode<K, V>(key, value, maxLevel, Instant.now().toEpochMilli());
             for (int i = maxLevel; i >= 0; i--) {
                 newNode.forward[i] = head;
             }
@@ -35,7 +42,7 @@ public class SkipList <T extends Comparable<? super T>> {
 
         //if there is only one element - auto add current element to the back and skip rest of the logic
         if (head.forward[0] == null) {
-            SkipListNode<T> newTerminalNode = new SkipListNode<T>(value, maxLevel, Instant.now().toEpochMilli());
+            SkipListNode<K, V> newTerminalNode = new SkipListNode<K, V>(key, value, maxLevel, Instant.now().toEpochMilli());
             for (int i = maxLevel; i >= 0; i--) {
                 head.forward[i] = newTerminalNode;
             }
@@ -43,21 +50,21 @@ public class SkipList <T extends Comparable<? super T>> {
             return;
         }
 
-        SkipListNode<T>[] update = new SkipListNode[maxLevel + 1];
-        SkipListNode<T> current = this.head;
+        SkipListNode<K, V>[] update = new SkipListNode[maxLevel + 1];
+        SkipListNode<K, V> current = this.head;
 
         for (int i = maxLevel; i >= 0; i--) {
-            current = seekAndStopBeforeTarget(current, value, i);
+            current = seekAndStopBeforeTarget(current, key, i);
             update[i] = current;
         }
 
         current = current.forward[0];
 
-        if (current == null || current.value != value) {
+        if (current == null || current.key != key) {
             final int lvl = getRandomLevel();
 
             //to each of closest smaller items on each level replace next node link
-            SkipListNode<T> newNode = new SkipListNode<T>(value, lvl, Instant.now().toEpochMilli());
+            SkipListNode<K, V> newNode = new SkipListNode<K, V>(key, value, lvl, Instant.now().toEpochMilli());
             for (int i = 0; i <= lvl; i++) {
                 newNode.forward[i] = update[i].forward[i];
                 update[i].forward[i] = newNode;
@@ -67,46 +74,55 @@ public class SkipList <T extends Comparable<? super T>> {
 
     }
 
-    public boolean search(T value) {
+    /**
+     * @param key - used to query key set
+     * @return - In case of matching key - returns associated value. In case of no matching key returns null.
+     */
+    public V search(K key) {
 
-        if (this.head.value.compareTo(value) > 0) {
-            return false;
+        if (this.head.key.compareTo(key) > 0) {
+            return null;
         }
 
-        if (this.head.value.compareTo(value) == 0) {
-            return true;
+        if (this.head.key.compareTo(key) == 0) {
+            return this.head.value;
         }
 
-        SkipListNode<T> current = this.head;
+        SkipListNode<K, V> current = this.head;
 
         for (int i = maxLevel; i >= 0; i--) {
-            current = seekAndStopBeforeTarget(current, value, i);
+            current = seekAndStopBeforeTarget(current, key, i);
         }
         current = current.forward[0];
-        return current != null && current.value == value;
+
+        if (current == null || current.key != key) {
+            return null;
+        }
+
+        return current.value;
     }
 
-    public boolean delete(T value) {
+    public boolean delete(K key) {
 
-        if (this.head.value.compareTo(value) > 0) {
+        if (this.head.key.compareTo(key) > 0) {
             return false;
         }
 
-        if (this.head.value.compareTo(value) == 0) {
+        if (this.head.key.compareTo(key) == 0) {
             this.head = head.forward[0];
             return true;
         }
 
-        SkipListNode<T> current = this.head;
-        SkipListNode<T>[] update = new SkipListNode[maxLevel + 1];
+        SkipListNode<K, V> current = this.head;
+        SkipListNode<K, V>[] update = new SkipListNode[maxLevel + 1];
 
         for (int i = maxLevel; i >= 0; i--) {
-            current = seekAndStopBeforeTarget(current, value, i);
+            current = seekAndStopBeforeTarget(current, key, i);
             update[i] = current;
         }
         current = current.forward[0];
 
-        if (current != null && current.value.compareTo(value) == 0) {
+        if (current != null && current.key.compareTo(key) == 0) {
             for (int i = 0; i <= maxLevel; i++) {
                 if (update[i].forward[i] != current) break;
                 update[i].forward[i] = current.forward[i];
@@ -116,8 +132,8 @@ public class SkipList <T extends Comparable<? super T>> {
         return false;
     }
 
-    private SkipListNode<T> seekAndStopBeforeTarget(SkipListNode<T> current, T value, int i) {
-        while (current.forward[i] != null && current.forward[i].value.compareTo(value) < 0) {
+    private SkipListNode<K, V> seekAndStopBeforeTarget(SkipListNode<K, V> current, K key, int i) {
+        while (current.forward[i] != null && current.forward[i].key.compareTo(key) < 0) {
             current = current.forward[i];
         }
 

@@ -1,13 +1,14 @@
 package org.example.model;
 
-import org.w3c.dom.Node;
 
-public class SkipListNode <N extends Comparable<? super N>>{
-    final N value;
-    SkipListNode<N>[] forward;
-    long insertionTimestamp;
+public class SkipListNode<K extends Comparable<? super K>, V> {
+    final K key;
+    final V value;
+    SkipListNode<K, V>[] forward;
+    final long insertionTimestamp;
 
-    public SkipListNode(N value, int level, long insertionTimestamp) {
+    public SkipListNode(K key, V value, int level, long insertionTimestamp) {
+        this.key = key;
         this.value = value;
         this.forward = new SkipListNode[level + 1];
         this.insertionTimestamp = insertionTimestamp;
